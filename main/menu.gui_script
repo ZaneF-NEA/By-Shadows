@@ -1,0 +1,36 @@
+function init(self)
+	msg.post(".", "acquire_input_focus")
+
+end
+
+local function final(self)
+	msg.post(".", "release_input_focus")
+end
+
+function on_input(self, action_id, action)
+	if action_id == hash("rock") and action.pressed then -- check for mouse click
+		if action.x > 440 and action.x < 840 then -- options from central column
+			msg.post(".", "release_input_focus") -- allows input to be given to another object
+			msg.post("/main", "acquire_input_focus") -- gives main the input focus to give to another collection via proxy
+			msg.post("/gui#menu", "disable") -- hide this collection after using final()
+			msg.post("/gui#menu", "unload") -- remove collection from memory
+
+			if action.y < 110 then -- options menu
+				print("options")
+			elseif action.y < 210 then -- go to leaderboard
+				msg.post("/main#leaderboardproxy", "load") -- load the new collection into memory
+				msg.post("/main#leaderboardproxy", "init") -- start the new collection
+				msg.post("/main#leaderboardproxy", "enable") -- show the new collection
+			elseif action.y < 310 then -- go to marathon mode
+				print("marathon mode")
+			elseif action.y < 410 then -- go to select level
+				msg.post("/main#level1_proxy", "load") -- load the new collection into memory
+				msg.post("/main#level1_proxy", "init") -- start the new collection
+				msg.post("/main#level1_proxy", "enable") -- show the new collection
+			end
+		elseif action.x < 160 and action.y < 80 then -- exit application
+			final(self) -- begin shutdown
+			sys.exit(0) -- exits application cleanly (no message to OS)
+		end
+	end
+end

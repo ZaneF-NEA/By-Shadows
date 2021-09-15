@@ -1,0 +1,40 @@
+timeRemaining = 0 -- global which needs to be accessed by this script and the goal to save the value. It stores time remaining in the level.
+
+local function conv_time(self) -- convert the pure seconds value to MM:SS
+	local minutes = math.floor(self.timeFloor / 60) -- get minutes from dividing seconds and only take the divisor
+	local seconds = math.fmod(self.timeFloor, 60) -- get seconds through working out how much is left over after dividing
+	local timeMS = ""
+	if minutes < 1 then -- formatting on MM:
+		timeMS = "00:" -- e.g 00:30
+	elseif minutes < 10 then
+		timeMS = "0" .. minutes .. ":" -- e.g 01:00
+	else
+		timeMS = minutes .. ":" -- e.g 10:00
+	end
+	if seconds == 0 then -- formatting on SS
+		timeMS = timeMS .. "00" -- e.g 1:00
+	elseif seconds < 10 then
+		timeMS = timeMS .. "0" .. seconds -- e.g 1:05
+	else
+		timeMS = timeMS .. seconds -- e.g 1:23
+	end
+	return timeMS
+end
+
+function init(self)
+	self.startTime = 120 -- seconds to complete level
+	timeRemaining = self.startTime
+	self.timeFloor = math.floor(timeRemaining) -- gets the seconds left without ms.
+	gui.set_text(gui.get_node("timer"), conv_time(self)) -- initialise the time so it doesn't say MM:SS
+end
+
+function update(self, dt)
+	if not paused then
+		timeRemaining = timeRemaining - dt
+		self.timeFloor = math.floor(timeRemaining)
+		gui.set_text(gui.get_node("timer"), conv_time(self)) -- update timer to reflect time
+		if timeRemaining <= 0 then -- when the level ends, exit to menu
+			sys.reboot() -- return to menu by restarting
+		end
+	end
+end

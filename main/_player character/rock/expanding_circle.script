@@ -1,0 +1,29 @@
+-- the expanding circle is a representation of the sound made by dropping the rock.
+-- if it makes contact with a guard, the guard will investigate.
+
+TIME_ON_SCREEN = 25 -- this is how long it should stay on screen in ms.
+FINAL_DIAMETER = 25 -- the diameter of the object as it vanishes.
+
+function init(self)
+	go.set(".", "scale.y", 1) -- starts from a tiny position and gets bigger over time.
+	go.set(".", "scale.x", 1)
+	sprite.set_constant("#sprite", "tint", vmath.vector4(1, 1, 1, 0.5)) -- make the circle translucent
+end
+
+function update(self, dt)
+	if not paused then
+		go.set(".", "scale.x", go.get(".", "scale.x") + (FINAL_DIAMETER / TIME_ON_SCREEN)) -- scale the object incrementally
+		go.set(".", "scale.y", go.get(".", "scale.y") + (FINAL_DIAMETER / TIME_ON_SCREEN))
+
+		--self.currentFade = go.get("#sprite", "tint")
+		--sprite.set("#sprite", "tint", go.get("#sprite", "tint") - vmath.vector4(0, 0, 0, 1 / TIME_ON_SCREEN)) -- set a gradual fade
+
+		if go.get(".", "scale.x") >= FINAL_DIAMETER then --once it is big enough, delete the object
+			go.delete()
+		end
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	msg.post(sender, "guard_investigate_msg", {origin=go.get_position()} ) -- send a message to the guard to get him to investigate centre
+end

@@ -1,0 +1,210 @@
+local SPEED = 100
+local SIGHT = 150 -- how far the guard can see (px)
+
+-- pre-hashing ids improves performance
+local msg_contact_point_response = hash("contact_point_response")
+local msg_animation_done = hash("animation_done")
+local group_obstacle = hash("ground")
+local group_distraction = hash("distraction")
+local input_left = hash("left")
+local input_right = hash("right")
+local input_jump = hash("jump")
+local input_rock = hash("rock")
+local anim_walk = hash("walk")
+local anim_idle = hash("stand")
+local anim_jump = hash("jump")
+local anim_fall = hash("jump")
+
+local distractionLocation = vmath.vector3()
+
+function init(self)
+	-- this lets us handle input in this script
+	go.set("#sprite", "tint", vmath.vector4(1, 1, 0, 1))
+
+	-- activate camera attached to the player collection
+	-- this will send camera updates to the render script
+	-- initial player velocity
+	self.velocity = vmath.vector3(0, 0, 0)
+	-- support variable to keep track of collisions and separation
+	self.correction = vmath.vector3()
+	-- if the player stands on ground or not
+	self.ground_contact = false
+	-- the currently playing animation
+	self.anim = nil
+	-- rock cooldown generates a cooldown for the rock before it can be used again to avoid players constantly using it.
+	self.rock_cooldown = 0.0
+	self.facing = 1 -- 1 for right, -1 for left. multipler used to flip direction.
+	self.waitTimer = 0.0 -- the guard will wait when turning around. this manages it.
+
+	-- Defining groups for raycasting was moved up here so it only fires once, rather than on every update (should SPEED things up!)
+	--tables for parameter 3 for physics.raycast
+	self.playerGroup = { hash("player") }
+	self.levelGroup = {  hash("ground"), hash("danger") }
+	self.investigating = false -- a bool that tracks whether the guard is currently investigating something.
+end
+
+local function play_animation(self, anim)
+	-- only play animations which are not already playing
+	if self.anim ~= anim then
+		-- tell the sprite to play the animation
+		sprite.play_flipbook("#sprite", anim)
+		-- remember which animation is playing
+		self.anim = anim
+	end
+end
+
+local function update_animations(self)
+	-- make sure the player character faces the right way
+	sprite.set_hflip("#sprite", self.facing == -1)
+	-- make sure the right animation is playing
+	if self.ground_contact then
+		if self.velocity.x == 0 then
+			play_animation(self, anim_idle)
+		else
+			play_animation(self, anim_walk)
+		end
+	else
+		if self.velocity.y > 0 then
+			play_animation(self, anim_jump)
+		else
+			play_animation(self, anim_fall)
+		end
+	end
+end
+
+local function walk(self)
+	self.velocity.x = SPEED * self.facing
+end
+
+local function stop(self) -- when waiting
+	self.velocity.x = 0
+end
+
+local function player_detection(self, guardEyes, midRaycast, farRaycast)
+	if physics.raycast(guardEyes, farRaycast, self.playerGroup) then
+		for i = 1, SIGHT do
+			walk(self)
+			print("Test")
+		end
+	elseif physics.raycast(guardEyes, midRaycast, self.playerGroup) then -- ends the level if spotting player.
+		print("Level end!") -- send message to end level
+	end
+end
+
+local function obstacle_detection(self, guardEyes, midRaycast, lowRaycast)
+	-- the first conditional checks if there is a wall, the second checks if there is a chasm and the guard turns around when faced with either
+	if physics.raycast(guardEyes, midRaycast, self.levelGroup) or not physics.raycast(guardEyes, lowRaycast, self.levelGroup) then
+		self.waitTimer = 0.8  -- triggers guard to wait.
+	end
+end
+
+local function distraction_handling(self, location)
+	if go.get_position().x > location.x then -- face the distraction 
+		self.facing = -1
+	else
+		self.facing = 1
+	end
+	while go.get_position().y ~= location.y do -- walk to distraction (or closest it can get to it)
+		walk(self)
+	end
+	self.investigating = false
+	print("hello")
+end
+
+function update(self, dt)
+	if not paused then
+		-- apply gravity
+		self.velocity.y = self.velocity.y + gravity * dt
+
+		go.set_position(go.get_position() + (self.velocity * dt)) -- movement
+
+		-- update animations based on state (ground, air, move and idle)
+		update_animations(self)
+
+		-- reset volatile state
+		self.correction = vmath.vector3()
+		self.ground_contact = false
+		self.wall_contact = false
+
+		--raycasting points (must be redifined constantly to account for the movement of the guard changing what he is able to see)
+		local guardEyes = vmath.vector3(go.get_position().x + (20 * self.facing), go.get_position().y + 90, 0) -- so the guard doesn't see out of his feet.
+		local midRaycast = vmath.vector3(guardEyes.x + (SIGHT * self.facing), guardEyes.y, 0)
+		local highRaycast = vmath.vector3(midRaycast.x, midRaycast.y + 100, 0) 
+		local lowRaycast = vmath.vector3(midRaycast.x, midRaycast.y - 100, 0)
+		local farRaycast = vmath.vector3(guardEyes.x + (2 * SIGHT * self.facing), guardEyes.y, 0) -- this is so the guard doesn't immediately spot the player and walks to him.
+
+		-- the first two if statements are player detection
+		-- the third is distraction followup
+		-- the fourth is waiting before turning around
+		-- the fifth is normal behaviour
+		if physics.raycast(guardEyes, midRaycast, self.playerGroup) or physics.raycast(guardEyes, highRaycast, self.playerGroup) then -- ends the level if spotting player.
+			print("Level end!") -- send message to end level
+		elseif physics.raycast(guardEyes, farRaycast, self.playerGroup) then -- gets closer to the player if he can vaguely see the PC
+			walk(self)
+		--elseif self.investigating then
+		elseif self.waitTimer > 0 then -- if the guard still has time to wait, he will stop here.
+			stop(self)
+			self.waitTimer = self.waitTimer - dt
+			if self.waitTimer <= 0 then -- this will get the guard to turn around right as they move, rather than when they stop
+				self.facing = -self.facing -- this gives the user a window (which is waitTimer) to move past the guard.
+			end
+		elseif not self.investigating then -- normal behaviour
+			walk(self)
+			obstacle_detection(self, guardEyes, midRaycast, lowRaycast) -- waitTimer is only ever > 0 when already dealing with an obstacle
+		end
+	end
+end
+
+-- https://defold.com/manuals/physics/#resolving-kinematic-collisions
+local function handle_obstacle_contact(self, normal, distance)
+	if distance > 0 then
+		-- First, project the accumulated correction onto
+		-- the penetration vector
+		local proj = vmath.project(self.correction, normal * distance)
+		if proj < 1 then
+			-- Only care for projections that does not overshoot.
+			local comp = (distance - distance * proj) * normal
+			-- Apply compensation
+			go.set_position(go.get_position() + comp)
+			-- Accumulate correction done
+			self.correction = self.correction + comp
+		end
+	end
+
+	-- collided with a wall (Shouldn't really happen)
+	-- stop horizontal movement
+	if math.abs(normal.x) > 0.7 then
+		self.wall_contact = true
+		self.velocity.x = 0
+	end
+	-- collided with the ground
+	-- stop vertical movement
+	if normal.y > 0.7 then
+		self.ground_contact = true
+		self.velocity.y = 0
+	end
+	-- collided with the ceiling
+	-- stop vertical movement
+	if normal.y < -0.7 then
+		self.velocity.y = 0
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	--check if message is a rock circle
+	if message.group == group_distraction and not self.investigating then
+		self.investigating = true -- this is to maintain logic on update() and so the guard doesnt respond to two distractions
+		distractionLocation = go.get_position(sender)
+		distraction_handling(self, distractionLocation)
+	elseif message_id == msg_contact_point_response then -- check if we received a contact point message
+		--check that the object is something we consider an obstacle
+		if message.group == group_obstacle then
+			handle_obstacle_contact(self, message.normal, message.distance)
+		end
+	end
+end
+
+
+
+
+

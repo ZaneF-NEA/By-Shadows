@@ -1,0 +1,12 @@
+-- When the PC touches the goal, the level ends successfully.
+-- the program will create a save file and add the time and date to the file where appropriate
+
+function on_message(self, message_id, message, sender)
+	if sys.load("leaderboard") == { } then -- initialise a leaderboard file if it doesn't exist
+		sys.save("leaderboard", { }) -- the table initially loaded in is empty
+	end
+	local lbTable = sys.load(sys.get_save_file("NEA", "leaderboard")) -- load the table from the file
+	table.insert(lbTable, 1, timeRemaining .. "; " .. os.date("%y%m%d")) -- add the current run to the table and the date as YY-MM-DD
+	sys.save(sys.get_save_file("NEA", "leaderboard"), lbTable) -- reinsert the table back into the file
+	sys.reboot() -- return to main menu
+end

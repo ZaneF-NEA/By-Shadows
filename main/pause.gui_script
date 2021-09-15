@@ -1,0 +1,22 @@
+paused = false -- a global variable used by many scripts to determine if the program is paused or not
+
+function init(self)
+	paused = false
+	msg.post(".", "disable") -- hide the pause menu while not paused
+end
+
+function on_input(self, action_id, action)
+	if action_id == hash("rock") and action.pressed then -- if the user presses "return to game" while the pause menu is active, it will unpause
+		if action.x > 440 and action.x < 840 then -- central column
+			if action.y > 320 and action.y < 400 then -- "return to game"
+				paused = false -- allow update() to be used again
+				msg.post(".", "release_input_focus") -- give PC input again
+				msg.post(".", "disable") -- hide the pause gui
+			elseif action.y > 220 and action.y < 300 then -- "exit to main menu"
+				sys.reboot() -- return to menu by restarting the program, fully resetting the program
+			elseif action.y > 120 and action.y < 200 then -- "exit to desktop"
+				sys.exit(0) -- exits application cleanly (no message to OS)
+			end	
+		end
+	end
+end

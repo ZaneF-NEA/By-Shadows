@@ -1,0 +1,21 @@
+local SPEED = 300 -- A constant for speed. This will probably be changed to better values, so I need it up here.
+
+function init(self)
+	go.set("#sprite", "scale.y", go.get("#sprite", "scale.y") / 2) -- These two lines quarter the scale. This is to make the rock small
+	go.set("#sprite", "scale.x", go.get("#sprite", "scale.x") / 2) -- but I can still edit it comfortably at a larger scale.
+	self.velocity = vmath.vector3(0, -SPEED, 0)
+end
+
+function update(self, dt)
+	if not paused then
+		go.set_position(go.get_position() + (self.velocity * dt))
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("collision_response") then
+		factory.create("#circleFactory", go.get_position()) -- creates a circle which manages who "hears" the rock. 
+		-- play sound
+		go.delete() -- deletes rock, no longer necessary and taking up resources
+	end
+end
