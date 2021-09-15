@@ -1,0 +1,37 @@
+[project]
+title = NEA
+
+[bootstrap]
+main_collection = /main/main.collectionc
+render = /builtins/render/default.renderc
+
+[input]
+game_binding = /main/_player character/input.input_bindingc
+use_accelerometer = 0
+gamepads = /builtins/input/default.gamepadsc
+
+[display]
+width = 1280
+height = 720
+fullscreen = 0
+dynamic_orientation = 0
+update_frequency = 60
+
+[script]
+shared_state = 1
+
+[windows]
+app_icon = /assets/app_icons/appicon.ico
+
+[osx]
+app_icon = /assets/app_icons/appicon.icns
+
+[android]
+input_method = HiddenInputField
+
+[physics]
+gravity_y = -1000.0
+scale = 0.01
+debug = 0
+allow_dynamic_transforms = 1
+
