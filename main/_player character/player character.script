@@ -147,8 +147,7 @@ function on_message(self, message_id, message, sender)
 end
 
 local function jump(self)
-	-- only allow jump from ground
-	-- (extend this with a counter to do things like double-jumps)
+	-- can bypass a ground_contact movement due to the fact that it is already checked
 	if self.ground_contact then
 		-- set take-off speed
 		self.velocity.y = jump_takeoff_speed
@@ -167,7 +166,7 @@ local function abort_jump(self)
 end
 
 local function walk(self, direction)
-	self.velocity.x = max_speed * direction
+	self.velocity.x = max_speed * direction -- direction can only be 1 or -1 and is used to push left or right.
 end
 
 function on_input(self, action_id, action)

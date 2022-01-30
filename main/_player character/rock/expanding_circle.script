@@ -15,9 +15,6 @@ function update(self, dt)
 		go.set(".", "scale.x", go.get(".", "scale.x") + (FINAL_DIAMETER / TIME_ON_SCREEN)) -- scale the object incrementally
 		go.set(".", "scale.y", go.get(".", "scale.y") + (FINAL_DIAMETER / TIME_ON_SCREEN))
 
-		--self.currentFade = go.get("#sprite", "tint")
-		--sprite.set("#sprite", "tint", go.get("#sprite", "tint") - vmath.vector4(0, 0, 0, 1 / TIME_ON_SCREEN)) -- set a gradual fade
-
 		if go.get(".", "scale.x") >= FINAL_DIAMETER then --once it is big enough, delete the object
 			go.delete()
 		end
@@ -25,5 +22,5 @@ function update(self, dt)
 end
 
 function on_message(self, message_id, message, sender)
-	msg.post(sender, "guard_investigate_msg", {origin=go.get_position()} ) -- send a message to the guard to get him to investigate centre
+	msg.post(message.other_id, "guard_investigate_msg", {position = go.get_position()} ) -- send a message to the guard to get him to investigate centre
 end

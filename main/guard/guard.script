@@ -18,16 +18,13 @@ local anim_fall = hash("jump")
 local distractionLocation = vmath.vector3()
 
 function init(self)
-	-- this lets us handle input in this script
-	go.set("#sprite", "tint", vmath.vector4(1, 1, 0, 1))
+	go.set("#sprite", "tint", vmath.vector4(1, 1, 0, 1)) -- change the tint of the enemy to differentiate it from the PC
 
-	-- activate camera attached to the player collection
-	-- this will send camera updates to the render script
-	-- initial player velocity
+	-- initial velocity
 	self.velocity = vmath.vector3(0, 0, 0)
 	-- support variable to keep track of collisions and separation
 	self.correction = vmath.vector3()
-	-- if the player stands on ground or not
+	-- if the guard stands on ground or not
 	self.ground_contact = false
 	-- the currently playing animation
 	self.anim = nil
@@ -95,8 +92,10 @@ local function obstacle_detection(self, guardEyes, midRaycast, lowRaycast)
 	-- the first conditional checks if there is a wall, the second checks if there is a chasm and the guard turns around when faced with either
 	if physics.raycast(guardEyes, midRaycast, self.levelGroup) or not physics.raycast(guardEyes, lowRaycast, self.levelGroup) then
 		self.waitTimer = 0.8  -- triggers guard to wait.
+		self.investigating = false -- stop investigating if the enemy no longer can
 	end
 end
+
 
 local function distraction_handling(self, location)
 	if go.get_position().x > location.x then -- face the distraction 
@@ -104,11 +103,9 @@ local function distraction_handling(self, location)
 	else
 		self.facing = 1
 	end
-	while go.get_position().y ~= location.y do -- walk to distraction (or closest it can get to it)
-		walk(self)
-	end
-	self.investigating = false
-	print("hello")
+	walk(self)
+	self.waitTimer = 1 -- get the guard to stop
+	self.investigating = false -- stop investigating as distraction dealt with, return to normal behaviour
 end
 
 function update(self, dt)
@@ -191,11 +188,12 @@ local function handle_obstacle_contact(self, normal, distance)
 end
 
 function on_message(self, message_id, message, sender)
-	--check if message is a rock circle
-	if message.group == group_distraction and not self.investigating then
-		self.investigating = true -- this is to maintain logic on update() and so the guard doesnt respond to two distractions
-		distractionLocation = go.get_position(sender)
-		distraction_handling(self, distractionLocation)
+	--check if message is a distraction (uses collision masking)
+	if message_id == hash("guard_investigate_msg") then
+		if not self.investigating then -- make sure two distractions aren't handled at once
+			self.investigating = true -- this is to maintain logic on update() and so the guard doesnt respond to two distractions
+			distraction_handling(self, message.position)
+		end
 	elseif message_id == msg_contact_point_response then -- check if we received a contact point message
 		--check that the object is something we consider an obstacle
 		if message.group == group_obstacle then

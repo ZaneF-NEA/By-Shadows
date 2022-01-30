@@ -3,8 +3,8 @@ instances {
   id: "goal"
   prototype: "/main/goal.go"
   position {
-    x: 373.445
-    y: 169.802
+    x: 1849.117
+    y: 289.536
     z: 0.0
   }
   rotation {
@@ -23,29 +23,9 @@ collection_instances {
   id: "player character1"
   collection: "/main/_player character/player character.collection"
   position {
-    x: 204.811
-    y: 344.848
+    x: 241.294
+    y: 198.918
     z: 1.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale3 {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-  }
-}
-collection_instances {
-  id: "guard1"
-  collection: "/main/guard/guard.collection"
-  position {
-    x: 840.848
-    y: 326.664
-    z: 0.0
   }
   rotation {
     x: 0.0
@@ -63,8 +43,8 @@ collection_instances {
   id: "guard"
   collection: "/main/guard/guard.collection"
   position {
-    x: 1843.416
-    y: 525.374
+    x: 1209.734
+    y: 398.107
     z: 0.0
   }
   rotation {
