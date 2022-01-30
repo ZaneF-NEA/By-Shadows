@@ -1,5 +1,5 @@
 function init(self)
-	
+	levelURL = nil -- this value stores the currently loaded level. this will handle pausing and addressing the current relevant level collection.
 end
 
 function final(self)

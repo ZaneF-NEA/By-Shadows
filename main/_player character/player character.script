@@ -43,7 +43,7 @@ function init(self)
 	-- the currently playing animation
 	self.anim = nil
 	-- rock cooldown generates a cooldown for the rock before it can be used again to avoid players constantly using it.
-	self.rock_cooldown = 0.0
+	self.rock_cooldown = 0.05 -- This is not set to 0.0 at first so a rock isn't immediately created when the user clicks to start the level.
 end
 
 local function play_animation(self, anim)
@@ -184,9 +184,9 @@ function on_input(self, action_id, action)
 	elseif action_id == hash("pause") then -- user pauses
 		--msg.post(".", "release_input_focus") -- allows the pause menu to gain focus
 		msg.post("/pause gui", "enable") -- show the pause menu
-		paused = true
+		--paused = true
 		msg.post("/pause gui", "acquire_input_focus")
-		msg.post("", "set_time_step", {factor = 0, mode = 0})
+		msg.post(levelURL, "set_time_step", {factor = 0, mode = 0})
 	end
 end
 

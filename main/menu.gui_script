@@ -1,10 +1,5 @@
 function init(self)
-	msg.post(".", "acquire_input_focus")
-
-end
-
-local function final(self)
-	msg.post(".", "release_input_focus")
+	msg.post(".", "acquire_input_focus") -- gets input so the menu can be interacted with when clicking on it
 end
 
 function on_input(self, action_id, action)
@@ -29,7 +24,6 @@ function on_input(self, action_id, action)
 				msg.post("/main#level1_proxy", "enable") -- show the new collection
 			end
 		elseif action.x < 160 and action.y < 80 then -- exit application
-			final(self) -- begin shutdown
 			sys.exit(0) -- exits application cleanly (no message to OS)
 		end
 	end
