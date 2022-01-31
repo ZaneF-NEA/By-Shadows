@@ -109,46 +109,44 @@ local function distraction_handling(self, location)
 end
 
 function update(self, dt)
-	if not paused then
-		-- apply gravity
-		self.velocity.y = self.velocity.y + gravity * dt
+	-- apply gravity
+	self.velocity.y = self.velocity.y + gravity * dt
 
-		go.set_position(go.get_position() + (self.velocity * dt)) -- movement
+	go.set_position(go.get_position() + (self.velocity * dt)) -- movement
 
-		-- update animations based on state (ground, air, move and idle)
-		update_animations(self)
+	-- update animations based on state (ground, air, move and idle)
+	update_animations(self)
 
-		-- reset volatile state
-		self.correction = vmath.vector3()
-		self.ground_contact = false
-		self.wall_contact = false
+	-- reset volatile state
+	self.correction = vmath.vector3()
+	self.ground_contact = false
+	self.wall_contact = false
 
-		--raycasting points (must be redifined constantly to account for the movement of the guard changing what he is able to see)
-		local guardEyes = vmath.vector3(go.get_position().x + (20 * self.facing), go.get_position().y + 90, 0) -- so the guard doesn't see out of his feet.
-		local midRaycast = vmath.vector3(guardEyes.x + (SIGHT * self.facing), guardEyes.y, 0)
-		local highRaycast = vmath.vector3(midRaycast.x, midRaycast.y + 100, 0) 
-		local lowRaycast = vmath.vector3(midRaycast.x, midRaycast.y - 100, 0)
-		local farRaycast = vmath.vector3(guardEyes.x + (2 * SIGHT * self.facing), guardEyes.y, 0) -- this is so the guard doesn't immediately spot the player and walks to him.
+	--raycasting points (must be redifined constantly to account for the movement of the guard changing what he is able to see)
+	local guardEyes = vmath.vector3(go.get_position().x + (20 * self.facing), go.get_position().y + 90, 0) -- so the guard doesn't see out of his feet.
+	local midRaycast = vmath.vector3(guardEyes.x + (SIGHT * self.facing), guardEyes.y, 0)
+	local highRaycast = vmath.vector3(midRaycast.x, midRaycast.y + 100, 0) 
+	local lowRaycast = vmath.vector3(midRaycast.x, midRaycast.y - 100, 0)
+	local farRaycast = vmath.vector3(guardEyes.x + (2 * SIGHT * self.facing), guardEyes.y, 0) -- this is so the guard doesn't immediately spot the player and walks to him.
 
-		-- the first two if statements are player detection
-		-- the third is distraction followup
-		-- the fourth is waiting before turning around
-		-- the fifth is normal behaviour
-		if physics.raycast(guardEyes, midRaycast, self.playerGroup) or physics.raycast(guardEyes, highRaycast, self.playerGroup) then -- ends the level if spotting player.
-			print("Level end!") -- send message to end level
-		elseif physics.raycast(guardEyes, farRaycast, self.playerGroup) then -- gets closer to the player if he can vaguely see the PC
-			walk(self)
+	-- the first two if statements are player detection
+	-- the third is distraction followup
+	-- the fourth is waiting before turning around
+	-- the fifth is normal behaviour
+	if physics.raycast(guardEyes, midRaycast, self.playerGroup) or physics.raycast(guardEyes, highRaycast, self.playerGroup) then -- ends the level if spotting player.
+		print("Level end!") -- send message to end level
+	elseif physics.raycast(guardEyes, farRaycast, self.playerGroup) then -- gets closer to the player if he can vaguely see the PC
+		walk(self)
 		--elseif self.investigating then
-		elseif self.waitTimer > 0 then -- if the guard still has time to wait, he will stop here.
-			stop(self)
-			self.waitTimer = self.waitTimer - dt
-			if self.waitTimer <= 0 then -- this will get the guard to turn around right as they move, rather than when they stop
-				self.facing = -self.facing -- this gives the user a window (which is waitTimer) to move past the guard.
-			end
-		elseif not self.investigating then -- normal behaviour
-			walk(self)
-			obstacle_detection(self, guardEyes, midRaycast, lowRaycast) -- waitTimer is only ever > 0 when already dealing with an obstacle
+	elseif self.waitTimer > 0 then -- if the guard still has time to wait, he will stop here.
+		stop(self)
+		self.waitTimer = self.waitTimer - dt
+		if self.waitTimer <= 0 then -- this will get the guard to turn around right as they move, rather than when they stop
+			self.facing = -self.facing -- this gives the user a window (which is waitTimer) to move past the guard.
 		end
+	elseif not self.investigating then -- normal behaviour
+		walk(self)
+		obstacle_detection(self, guardEyes, midRaycast, lowRaycast) -- waitTimer is only ever > 0 when already dealing with an obstacle
 	end
 end
 

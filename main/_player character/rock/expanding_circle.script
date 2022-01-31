@@ -11,13 +11,11 @@ function init(self)
 end
 
 function update(self, dt)
-	if not paused then
-		go.set(".", "scale.x", go.get(".", "scale.x") + (FINAL_DIAMETER / TIME_ON_SCREEN)) -- scale the object incrementally
-		go.set(".", "scale.y", go.get(".", "scale.y") + (FINAL_DIAMETER / TIME_ON_SCREEN))
+	go.set(".", "scale.x", go.get(".", "scale.x") + (FINAL_DIAMETER / TIME_ON_SCREEN)) -- scale the object incrementally
+	go.set(".", "scale.y", go.get(".", "scale.y") + (FINAL_DIAMETER / TIME_ON_SCREEN))
 
-		if go.get(".", "scale.x") >= FINAL_DIAMETER then --once it is big enough, delete the object
-			go.delete()
-		end
+	if go.get(".", "scale.x") >= FINAL_DIAMETER then --once it is big enough, delete the object
+		go.delete()
 	end
 end
 

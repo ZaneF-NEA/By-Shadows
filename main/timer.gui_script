@@ -29,12 +29,10 @@ function init(self)
 end
 
 function update(self, dt)
-	if not paused then
-		timeRemaining = timeRemaining - dt
-		self.timeFloor = math.floor(timeRemaining)
-		gui.set_text(gui.get_node("timer"), conv_time(self)) -- update timer to reflect time
-		if timeRemaining <= 0 then -- when the level ends, exit to menu
-			sys.reboot() -- return to menu by restarting
-		end
+	timeRemaining = timeRemaining - dt
+	self.timeFloor = math.floor(timeRemaining)
+	gui.set_text(gui.get_node("timer"), conv_time(self)) -- update timer to reflect time
+	if timeRemaining <= 0 then -- when the level ends, exit to menu
+		sys.reboot() -- return to menu by restarting
 	end
 end
