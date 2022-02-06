@@ -1,0 +1,79 @@
+local name = ""
+
+function init(self)
+	msg.post(".", "acquire_input_focus") -- so the user can input their name.
+	if marathonMode then -- retitle in marathon mode to make this make sense
+		gui.set_text(gui.get_node("title"), "Marathon mode complete!")
+	end
+end
+
+local function getTime(input) -- get the time from any line in the exisiting leaderboard
+	local output = ""
+	local count = 1
+	local unfinished = true
+	while unfinished do
+		char = string.sub(input, count, 1)
+		if char == "," then
+			unfinished = false
+		else
+			output = output..char -- add the next letter of time to output
+			count = count + 1 -- increment counter
+		end
+	end
+	return tonumber(output)
+end	
+
+function on_input(self, action_id, action)
+	if action_id == hash("type") then -- if the user begins to type anything
+		name = name..action.text -- append what the user is typing to name
+		gui.set_text(gui.get_node("enter name"), name) -- display name
+	elseif action_id == hash("rock") and action.pressed and action.x < 750 and action.x > 550 and action.y < 140 and action.y > 40 then -- if the user clicks the ok button
+		if string.len(name) > 3 or string.len(name) == 0 then -- validation for name
+			gui.set_text(gui.get_node("enter name"), "Please enter a name between 1-3 characters.") -- error message
+			name = "" -- reset name
+		else
+			if marathonMode then
+				savefile = io.open("marathon mode.txt", "w") -- open marathon mode file in write mode.
+			else
+				local fileLocation = "level "..level..".txt" -- save file location. All files are "level <level num>.txt"
+				savefile = io.open(fileLocation, "w") -- open level leaderboard in write mode to variable file.
+			end
+			if savefile:read("*a") == nil then -- simply add the time to the file if it is empty
+				io.write(tostring(120 - timeRemaining)..", "..name..", "..os.date().."\n") -- time, name, date(, newline)
+			else
+				local newLeaderboard = { } -- create a new leaderboard
+				local added = false
+				for line in io.lines() do
+					if 120 - timeRemaining <= getTime(line) and not added and #newLeaderboard <= 20 then -- iterate through the leaderboard and add the new time
+						newLeaderboard[#newLeaderboard + 1] = tostring(120 - timeRemaining)..", "..name..", "..os.date().."\n"
+						added = true
+					elseif #newLeaderboard <= 20 then -- set the 20 highest
+						newLeaderboard[#newLeaderboard + 1] = line
+					end
+				end
+				io.write(newLeaderboard) -- set the new leaderboard
+			end
+			io.close()
+			msg.post("main:/main#record_time", "unload") -- exit menu
+			msg.post(levelURL, "unload") -- exit level
+			msg.post("main:/gui#menu", "load") -- load main menu gui into memory
+			msg.post("main:/gui#menu", "init") -- initiliases menu and functions
+			msg.post("main:/gui#menu", "enable") -- enables and shows main menu gui
+			msg.post("main:/gui#menu", "acquire_input_focus") -- allows user to interact with main menu
+		end
+	end
+end
+
+-- LEADERBOARD IS IN FORMAT TIME, NAME, DATE
+-- add to leaderboard
+-- 1. open leaderboard file (read)
+-- 2. make new empty table
+-- 3. iterate through the file
+-- 3a. if new time > time on table, add the time on table to the new table
+-- 3b. if new time < time on table, add the new time on table, and the rest of the times in the existing table
+-- 4. remove the last line in the new table if the table has more than 20 entries
+-- 5. close leaderboard
+-- 6. overwrite existing table with new table
+
+-- check if level is beaten
+-- if leaderboard for the level is empty, level is unbeaten

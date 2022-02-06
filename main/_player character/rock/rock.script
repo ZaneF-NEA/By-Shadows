@@ -13,7 +13,7 @@ end
 function on_message(self, message_id, message, sender)
 	if message_id == hash("collision_response") then
 		factory.create("#circleFactory", go.get_position()) -- creates a circle which manages who "hears" the rock. 
-		-- play sound
+		sound.play("#drop") -- play sound when hits the ground
 		go.delete() -- deletes rock, no longer necessary and taking up resources
 	end
 end

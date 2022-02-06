@@ -1,10 +1,10 @@
-name: "level 1"
+name: "level 4"
 instances {
   id: "goal"
   prototype: "/main/goal.go"
   position {
-    x: 1849.117
-    y: 289.536
+    x: 2206.636
+    y: 100.008
     z: 0.0
   }
   rotation {
@@ -23,8 +23,8 @@ collection_instances {
   id: "player character1"
   collection: "/main/_player character/player character.collection"
   position {
-    x: 241.294
-    y: 198.918
+    x: 155.145
+    y: 86.924
     z: 1.0
   }
   rotation {
@@ -43,8 +43,48 @@ collection_instances {
   id: "guard"
   collection: "/main/guard/guard.collection"
   position {
-    x: 1209.734
-    y: 398.107
+    x: 608.112
+    y: 128.534
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+collection_instances {
+  id: "guard1"
+  collection: "/main/guard/guard.collection"
+  position {
+    x: 1428.668
+    y: -116.429
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+collection_instances {
+  id: "guard2"
+  collection: "/main/guard/guard.collection"
+  position {
+    x: 1929.402
+    y: -308.954
     z: 0.0
   }
   rotation {
@@ -61,10 +101,10 @@ collection_instances {
 }
 scale_along_z: 0
 embedded_instances {
-  id: "level1"
+  id: "level4"
   data: "components {\n"
-  "  id: \"level 1\"\n"
-  "  component: \"/main/levels/level 1/level 1.tilemap\"\n"
+  "  id: \"level 4\"\n"
+  "  component: \"/main/levels/level 4/level 4.tilemap\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"
@@ -80,7 +120,7 @@ embedded_instances {
   "embedded_components {\n"
   "  id: \"collisionobject\"\n"
   "  type: \"collisionobject\"\n"
-  "  data: \"collision_shape: \\\"/main/levels/level 1/level 1.tilemap\\\"\\n"
+  "  data: \"collision_shape: \\\"/main/levels/level 4/level 4.tilemap\\\"\\n"
   "type: COLLISION_OBJECT_TYPE_STATIC\\n"
   "mass: 0.0\\n"
   "friction: 0.1\\n"
@@ -165,8 +205,8 @@ embedded_instances {
 embedded_instances {
   id: "config"
   data: "components {\n"
-  "  id: \"level 1 behaviour\"\n"
-  "  component: \"/main/levels/level 1/level 1 behaviour.script\"\n"
+  "  id: \"level 4 behaviour\"\n"
+  "  component: \"/main/levels/level 4/level 4 behaviour.script\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"

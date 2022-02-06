@@ -81,10 +81,9 @@ local function player_detection(self, guardEyes, midRaycast, farRaycast)
 	if physics.raycast(guardEyes, farRaycast, self.playerGroup) then
 		for i = 1, SIGHT do
 			walk(self)
-			print("Test")
 		end
 	elseif physics.raycast(guardEyes, midRaycast, self.playerGroup) then -- ends the level if spotting player.
-		print("Level end!") -- send message to end level
+		msg.post("main:/main", "restart_level") -- restart when spotted
 	end
 end
 
@@ -98,6 +97,7 @@ end
 
 
 local function distraction_handling(self, location)
+	sound.play("#distracted") -- This is placed here so the sound doesn't play several times at once
 	if go.get_position().x > location.x then -- face the distraction 
 		self.facing = -1
 	else
@@ -134,7 +134,8 @@ function update(self, dt)
 	-- the fourth is waiting before turning around
 	-- the fifth is normal behaviour
 	if physics.raycast(guardEyes, midRaycast, self.playerGroup) or physics.raycast(guardEyes, highRaycast, self.playerGroup) then -- ends the level if spotting player.
-		print("Level end!") -- send message to end level
+		sound.play("#spotted") -- play sound to indicate player character spotted
+		msg.post("main:/main", "restart_level") -- restart when spotted
 	elseif physics.raycast(guardEyes, farRaycast, self.playerGroup) then -- gets closer to the player if he can vaguely see the PC
 		walk(self)
 		--elseif self.investigating then

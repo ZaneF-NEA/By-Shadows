@@ -1,10 +1,10 @@
-name: "level 1"
+name: "level 3"
 instances {
   id: "goal"
   prototype: "/main/goal.go"
   position {
-    x: 1849.117
-    y: 289.536
+    x: 2219.558
+    y: 151.697
     z: 0.0
   }
   rotation {
@@ -24,7 +24,7 @@ collection_instances {
   collection: "/main/_player character/player character.collection"
   position {
     x: 241.294
-    y: 198.918
+    y: 160.151
     z: 1.0
   }
   rotation {
@@ -43,8 +43,28 @@ collection_instances {
   id: "guard"
   collection: "/main/guard/guard.collection"
   position {
-    x: 1209.734
-    y: 398.107
+    x: 1265.731
+    y: 139.66
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+collection_instances {
+  id: "guard1"
+  collection: "/main/guard/guard.collection"
+  position {
+    x: 1674.939
+    y: 131.045
     z: 0.0
   }
   rotation {
@@ -61,10 +81,10 @@ collection_instances {
 }
 scale_along_z: 0
 embedded_instances {
-  id: "level1"
+  id: "level3"
   data: "components {\n"
-  "  id: \"level 1\"\n"
-  "  component: \"/main/levels/level 1/level 1.tilemap\"\n"
+  "  id: \"level 3\"\n"
+  "  component: \"/main/levels/level 3/level 3.tilemap\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"
@@ -80,7 +100,7 @@ embedded_instances {
   "embedded_components {\n"
   "  id: \"collisionobject\"\n"
   "  type: \"collisionobject\"\n"
-  "  data: \"collision_shape: \\\"/main/levels/level 1/level 1.tilemap\\\"\\n"
+  "  data: \"collision_shape: \\\"/main/levels/level 3/level 3.tilemap\\\"\\n"
   "type: COLLISION_OBJECT_TYPE_STATIC\\n"
   "mass: 0.0\\n"
   "friction: 0.1\\n"
@@ -166,7 +186,7 @@ embedded_instances {
   id: "config"
   data: "components {\n"
   "  id: \"level 1 behaviour\"\n"
-  "  component: \"/main/levels/level 1/level 1 behaviour.script\"\n"
+  "  component: \"/main/levels/level 3/level 3 behaviour.script\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"

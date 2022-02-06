@@ -1,0 +1,4 @@
+function init(self)
+	levelURL = "main:/main#level3_proxy"
+	level = "3"
+end

@@ -1,10 +1,10 @@
-name: "leaderboard"
+name: "record_time"
 scale_along_z: 0
 embedded_instances {
   id: "gui"
   data: "components {\n"
-  "  id: \"leaderboard\"\n"
-  "  component: \"/main/leaderboard.gui\"\n"
+  "  id: \"record time\"\n"
+  "  component: \"/main/record time.gui\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"

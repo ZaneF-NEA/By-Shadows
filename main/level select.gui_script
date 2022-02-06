@@ -1,0 +1,35 @@
+function init(self)
+	msg.post(".", "acquire_input_focus")
+end
+
+function on_input(self, action_id, action)
+	if action_id == hash("rock") and action.pressed then -- check for mouse click
+		if action.y > 350 and action.y < 450 then -- user clicks on a level
+			msg.post("main:/main#levelselect", "disable") -- hide this collection after using final()
+			msg.post("main:/main#levelselect", "unload") -- remove collection from memory
+			if action.x > 50 and action.x < 250 then -- level 1
+				msg.post("main:/main#level1_proxy", "load") -- load the new collection into memory
+				msg.post("main:/main#level1_proxy", "init") -- start the new collection
+				msg.post("main:/main#level1_proxy", "enable") -- show the new collection
+			elseif action.x > 350 and action.x < 550 then -- level 2
+				msg.post("main:/main#level2_proxy", "load")
+				msg.post("main:/main#level2_proxy", "init")
+				msg.post("main:/main#level2_proxy", "enable")
+			elseif action.x > 650 and action.x < 850 then -- level 3
+				msg.post("main:/main#level3_proxy", "load")
+				msg.post("main:/main#level3_proxy", "init")
+				msg.post("main:/main#level3_proxy", "enable")
+			elseif action.x > 950 and action.x < 1150 then -- level 4
+				msg.post("main:/main#level4_proxy", "load")
+				msg.post("main:/main#level4_proxy", "init")
+				msg.post("main:/main#level4_proxy", "enable")
+			end
+		elseif action.x < 200 and action.y < 150 then -- user clicks back
+			msg.post("main:/main#levelselect", "unload") -- exit screen and removes it from memory
+			msg.post("main:/gui#menu", "load") -- load main menu gui into memory
+			msg.post("main:/gui#menu", "init") -- initiliases menu and functions
+			msg.post("main:/gui#menu", "enable") -- enables and shows main menu gui
+			msg.post("main:/gui#menu", "acquire_input_focus") -- allows user to interact with main menu
+		end
+	end
+end

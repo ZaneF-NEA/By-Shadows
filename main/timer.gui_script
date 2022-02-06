@@ -22,17 +22,27 @@ local function conv_time(self) -- convert the pure seconds value to MM:SS
 end
 
 function init(self)
-	self.startTime = 120 -- seconds to complete level
+	if marathonMode then
+		self.startTime = mmTimer -- start at marathon mode timer
+	else
+		self.startTime = 120 -- seconds to complete level
+	end
 	timeRemaining = self.startTime
 	self.timeFloor = math.floor(timeRemaining) -- gets the seconds left without ms.
 	gui.set_text(gui.get_node("timer"), conv_time(self)) -- initialise the time so it doesn't say MM:SS
 end
 
 function update(self, dt)
-	timeRemaining = timeRemaining - dt
+	if marathonMode then
+		mmTimer = mmTimer + dt -- count up if in marathon mode
+		timeRemaining = mmTimer -- save timer in timeRemaining so the same logic still applies in terms of displaying the time
+	else
+		timeRemaining = timeRemaining - dt -- count down in the normal mode
+		-- the below check is not necessary if the timer is counting up in marathon mode
+		if timeRemaining <= 0 then -- when the level ends, exit to menu
+			msg.post("main:/main", "restart_level") -- stop running the level and restart it
+		end
+	end
 	self.timeFloor = math.floor(timeRemaining)
 	gui.set_text(gui.get_node("timer"), conv_time(self)) -- update timer to reflect time
-	if timeRemaining <= 0 then -- when the level ends, exit to menu
-		sys.reboot() -- return to menu by restarting
-	end
 end

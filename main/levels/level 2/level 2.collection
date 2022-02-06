@@ -1,10 +1,10 @@
-name: "level 1"
+name: "level 2"
 instances {
   id: "goal"
   prototype: "/main/goal.go"
   position {
-    x: 1849.117
-    y: 289.536
+    x: 2516.45
+    y: 478.179
     z: 0.0
   }
   rotation {
@@ -20,12 +20,12 @@ instances {
   }
 }
 collection_instances {
-  id: "player character1"
+  id: "player character"
   collection: "/main/_player character/player character.collection"
   position {
-    x: 241.294
-    y: 198.918
-    z: 1.0
+    x: 210.632
+    y: 206.758
+    z: 0.0
   }
   rotation {
     x: 0.0
@@ -43,8 +43,48 @@ collection_instances {
   id: "guard"
   collection: "/main/guard/guard.collection"
   position {
-    x: 1209.734
-    y: 398.107
+    x: 1274.253
+    y: 382.009
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+collection_instances {
+  id: "guard1"
+  collection: "/main/guard/guard.collection"
+  position {
+    x: 181.655
+    y: 579.692
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+collection_instances {
+  id: "guard2"
+  collection: "/main/guard/guard.collection"
+  position {
+    x: 2195.883
+    y: 443.451
     z: 0.0
   }
   rotation {
@@ -61,10 +101,10 @@ collection_instances {
 }
 scale_along_z: 0
 embedded_instances {
-  id: "level1"
+  id: "level2"
   data: "components {\n"
-  "  id: \"level 1\"\n"
-  "  component: \"/main/levels/level 1/level 1.tilemap\"\n"
+  "  id: \"level 2\"\n"
+  "  component: \"/main/levels/level 2/level 2.tilemap\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"
@@ -80,7 +120,7 @@ embedded_instances {
   "embedded_components {\n"
   "  id: \"collisionobject\"\n"
   "  type: \"collisionobject\"\n"
-  "  data: \"collision_shape: \\\"/main/levels/level 1/level 1.tilemap\\\"\\n"
+  "  data: \"collision_shape: \\\"/main/levels/level 2/level 2.tilemap\\\"\\n"
   "type: COLLISION_OBJECT_TYPE_STATIC\\n"
   "mass: 0.0\\n"
   "friction: 0.1\\n"
@@ -108,8 +148,8 @@ embedded_instances {
   "}\n"
   ""
   position {
-    x: -8.279
-    y: 3.311
+    x: 0.0
+    y: 0.0
     z: 0.0
   }
   rotation {
@@ -163,10 +203,10 @@ embedded_instances {
   }
 }
 embedded_instances {
-  id: "config"
+  id: "timer"
   data: "components {\n"
-  "  id: \"level 1 behaviour\"\n"
-  "  component: \"/main/levels/level 1/level 1 behaviour.script\"\n"
+  "  id: \"timer\"\n"
+  "  component: \"/main/timer.gui\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"
@@ -198,10 +238,10 @@ embedded_instances {
   }
 }
 embedded_instances {
-  id: "timer"
+  id: "config"
   data: "components {\n"
-  "  id: \"timer\"\n"
-  "  component: \"/main/timer.gui\"\n"
+  "  id: \"level 2 behaviour\"\n"
+  "  component: \"/main/levels/level 2/level 2 behaviour.script\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"

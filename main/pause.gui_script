@@ -11,8 +11,8 @@ function on_input(self, action_id, action)
 				msg.post("main:/main#pause_proxy", "disable") -- stop receiving function
 				msg.post("main:/main#pause_proxy", "final") -- hide the pause gui
 			elseif action.y > 220 and action.y < 300 then -- "exit to main menu"
+				msg.post("main:/main#pause_proxy", "unload")
 				msg.post(levelURL, "unload") -- exit the level and removes it from memory
-				msg.post("main:/main#pause_proxy", "unload") -- exit the pause menu and hide it
 				msg.post("main:/gui#menu", "load") -- load main menu gui into memory
 				msg.post("main:/gui#menu", "init") -- initiliases menu and functions
 				msg.post("main:/gui#menu", "enable") -- enables and shows main menu gui

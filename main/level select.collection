@@ -1,10 +1,10 @@
-name: "leaderboard"
+name: "level select"
 scale_along_z: 0
 embedded_instances {
-  id: "gui"
+  id: "level select"
   data: "components {\n"
-  "  id: \"leaderboard\"\n"
-  "  component: \"/main/leaderboard.gui\"\n"
+  "  id: \"level select\"\n"
+  "  component: \"/main/level select.gui\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"

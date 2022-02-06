@@ -1,3 +1,15 @@
 function init(self)
 	levelURL = nil -- this value stores the currently loaded level. this will handle pausing and addressing the current relevant level collection.
+	level = nil -- stores the current level, used for loading leaderboards. saved as a string to easily use files
+	marathonMode = false -- determines whether the user is currently doing marathon mode
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("restart_level") then
+		msg.post(levelURL, "unload") -- stop running the level
+	elseif message_id == hash("proxy_unloaded") then -- this if statement starts when the level is totally finished unloading
+		msg.post(levelURL, "load") -- load the level again at an initial state
+		msg.post(levelURL, "enable")
+		msg.post(levelURL, "init") -- start running the level
+	end
 end

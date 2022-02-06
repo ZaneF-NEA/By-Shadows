@@ -2,11 +2,16 @@
 -- the program will create a save file and add the time and date to the file where appropriate
 
 function on_message(self, message_id, message, sender)
-	if sys.load("leaderboard") == { } then -- initialise a leaderboard file if it doesn't exist
-		sys.save("leaderboard", { }) -- the table initially loaded in is empty
+	if not marathonMode or (marathonMode and level == "4") then -- end level normally or completed marathon mode
+		-- load record time gui
+		msg.post("main:/main#record_time", "load")
+		msg.post("main:/main#record_time", "init")
+		msg.post("main:/main#record_time", "enable") -- show record time gui
+		msg.post(levelURL, "set_time_step", {factor = 0, mode = 0}) -- freeze the level to indicate it is over
+	else -- not final level in marathon mode
+		msg.post(levelURL, "unload") -- exit this level
+		msg.post("main:/main#level"..tostring(level + 1).."_proxy", "load") -- load next level
+		msg.post("main:/main#level"..tostring(level + 1).."_proxy", "init")
+		msg.post("main:/main#level"..tostring(level + 1).."_proxy", "enable")
 	end
-	local lbTable = sys.load(sys.get_save_file("NEA", "leaderboard")) -- load the table from the file
-	table.insert(lbTable, 1, timeRemaining .. "; " .. os.date("%y%m%d")) -- add the current run to the table and the date as YY-MM-DD
-	sys.save(sys.get_save_file("NEA", "leaderboard"), lbTable) -- reinsert the table back into the file
-	sys.reboot() -- return to main menu
 end
