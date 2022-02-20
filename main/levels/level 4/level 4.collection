@@ -20,7 +20,7 @@ instances {
   }
 }
 collection_instances {
-  id: "player character1"
+  id: "player character"
   collection: "/main/_player character/player character.collection"
   position {
     x: 155.145

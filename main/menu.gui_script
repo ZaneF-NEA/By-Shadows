@@ -22,7 +22,7 @@ function on_input(self, action_id, action)
 				msg.post("main:/main#level1_proxy", "load") -- start level 1
 				msg.post("main:/main#level1_proxy", "init")
 				msg.post("main:/main#level1_proxy", "enable")
-			elseif action.y < 410 then -- go to select level
+			else -- go to select level
 				marathonMode = false -- stop marathon mode behaviour in case it was enabled
 				msg.post("/main#levelselect", "load") -- load the new collection into memory
 				msg.post("/main#levelselect", "init") -- start the new collection

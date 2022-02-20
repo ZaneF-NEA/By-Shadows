@@ -29,7 +29,9 @@ function on_input(self, action_id, action)
 			gui.delete_node(gui.get_node("3"))
 			gui.delete_node(gui.get_node("4"))
 			gui.delete_node(gui.get_node("marathon mode"))
-			
+
+			local file = io.open("marathon mode.txt")
+			gui.set_text(gui.get_node("board"), file:read("*a"))
 		elseif action.x < 200 and action.y < 150 then -- user clicks back
 			msg.post("main:/main#leaderboardproxy", "unload") -- exit screen and removes it from memory
 			msg.post("main:/gui#menu", "load") -- load main menu gui into memory

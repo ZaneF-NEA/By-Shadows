@@ -105,7 +105,7 @@ embedded_components {
   data: "sound: \"/assets/sound/rock.ogg\"\n"
   "looping: 0\n"
   "group: \"master\"\n"
-  "gain: 1.0\n"
+  "gain: 0.1\n"
   "pan: 0.0\n"
   "speed: 1.0\n"
   "loopcount: 0\n"

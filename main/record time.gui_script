@@ -8,19 +8,19 @@ function init(self)
 end
 
 local function getTime(input) -- get the time from any line in the exisiting leaderboard
-	local output = ""
-	local count = 1
-	local unfinished = true
+	local output = "" -- what gets returned
+	local count = 1 -- current index
+	local unfinished = true -- bool flag
 	while unfinished do
-		char = string.sub(input, count, 1)
-		if char == "," then
+		char = string.sub(input, count, count) -- get the char at index
+		if char == "," then -- stop if the number has ended
 			unfinished = false
 		else
 			output = output..char -- add the next letter of time to output
 			count = count + 1 -- increment counter
 		end
 	end
-	return tonumber(output)
+	return tonumber(output) -- return it as a number so it can be compared to other numbers
 end	
 
 function on_input(self, action_id, action)
@@ -32,28 +32,42 @@ function on_input(self, action_id, action)
 			gui.set_text(gui.get_node("enter name"), "Please enter a name between 1-3 characters.") -- error message
 			name = "" -- reset name
 		else
+			-- variables that are local to this entire code block
+			local newLeaderboard = { } -- create a new leaderboard
+			local savefile = "" -- where savefile location will be stored
+			local fileLocation = "" -- savefile path
+			local newEntry = ""
 			if marathonMode then
-				savefile = io.open("marathon mode.txt", "w") -- open marathon mode file in write mode.
+				fileLocation = "marathon mode.txt"
+				savefile = io.open(fileLocation, "r") -- open marathon mode file in read mode.
+				newEntry = tostring(timeRemaining)..", "..name..", "..os.date() -- save the new entry as time, name, date
 			else
-				local fileLocation = "level "..level..".txt" -- save file location. All files are "level <level num>.txt"
-				savefile = io.open(fileLocation, "w") -- open level leaderboard in write mode to variable file.
+				fileLocation = "level "..level..".txt" -- save file location. All files are "level <level num>.txt"
+				savefile = io.open(fileLocation, "r") -- open level leaderboard in read mode to variable file.
+				newEntry = tostring(120 - timeRemaining)..", "..name..", "..os.date() -- as the timer counts down, time taken is time given - time left on the clock
 			end
-			if savefile:read("*a") == nil then -- simply add the time to the file if it is empty
-				io.write(tostring(120 - timeRemaining)..", "..name..", "..os.date().."\n") -- time, name, date(, newline)
+			if savefile == nil or savefile:read() == nil then -- if the file doesn't exist or is empty, skip reading it and just add the one time
+				newLeaderboard[1] = newEntry
 			else
-				local newLeaderboard = { } -- create a new leaderboard
 				local added = false
-				for line in io.lines() do
-					if 120 - timeRemaining <= getTime(line) and not added and #newLeaderboard <= 20 then -- iterate through the leaderboard and add the new time
-						newLeaderboard[#newLeaderboard + 1] = tostring(120 - timeRemaining)..", "..name..", "..os.date().."\n"
+				for line in io.lines(fileLocation) do
+					if 120 - timeRemaining <= getTime(tostring(line)) and not added and #newLeaderboard <= 20 then -- iterate through the leaderboard and add the new time
+						newLeaderboard[#newLeaderboard + 1] = newEntry
 						added = true
-					elseif #newLeaderboard <= 20 then -- set the 20 highest
+					end
+					if #newLeaderboard < 20 then -- set the 20 highest
 						newLeaderboard[#newLeaderboard + 1] = line
 					end
+				end -- io.lines closes the file here
+				if not added and #newLeaderboard < 20 then -- if there's still space and the current time hasn't been added, add it
+					newLeaderboard[#newLeaderboard + 1] = newEntry
 				end
-				io.write(newLeaderboard) -- set the new leaderboard
 			end
-			io.close()
+			savefile = io.open(fileLocation, "w") -- overwrite all data in the savefile
+			for key, value in pairs(newLeaderboard) do -- iterate through leaderboard table
+				savefile:write(value.."\n") -- add current row to file, create a new line
+			end
+			io.close() -- close savefile to safely store its data
 			msg.post("main:/main#record_time", "unload") -- exit menu
 			msg.post(levelURL, "unload") -- exit level
 			msg.post("main:/gui#menu", "load") -- load main menu gui into memory
