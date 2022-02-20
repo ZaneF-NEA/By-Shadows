@@ -1,0 +1,4 @@
+tile_set: "/main/levels/level.tilesource"
+default_animation: "goal"
+material: "/builtins/materials/sprite.material"
+blend_mode: BLEND_MODE_ALPHA

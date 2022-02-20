@@ -1,0 +1,4 @@
+tile_set: "/main/_player character/player character.atlas"
+default_animation: "stand"
+material: "/builtins/materials/sprite.material"
+blend_mode: BLEND_MODE_ALPHA

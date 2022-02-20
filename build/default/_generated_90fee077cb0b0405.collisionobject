@@ -1,0 +1,13 @@
+collision_shape: "/main/levels/level 2/level 2.tilemap"
+type: COLLISION_OBJECT_TYPE_STATIC
+mass: 0.0
+friction: 0.1
+restitution: 0.5
+group: "level"
+mask: "player"
+mask: "object"
+mask: "enemy"
+linear_damping: 0.0
+angular_damping: 0.0
+locked_rotation: false
+bullet: false

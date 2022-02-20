@@ -1,0 +1,4 @@
+tile_set: "/main/guard/guard.atlas"
+default_animation: "stand"
+material: "/builtins/materials/sprite.material"
+blend_mode: BLEND_MODE_ALPHA
